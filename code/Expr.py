@@ -1,3 +1,4 @@
+
 import random
 import math
 
@@ -51,13 +52,25 @@ class Node:
             self._left = input
         else:
             self._right = input
+def cal(var1, op, var2):
+    if op == '-':
+        return var1 - var2
+    if op == '*':
+        return var1 * var2
+    if op == '+':
+        return var1 + var2
+    if op == '/':
+        return var1 / var2
+             
+    
 class Expr:
     def __init__(self):
         self.node = Node()
         self.numCount = 0 #save how many number we should generate
         self.opCount = 1
         self.fitness = 0
-        self.correctAns = 0
+        self.possibility = 0
+        self.num = 0
     def calculator(self, x, head):#TODO if you wanna add more the one var you should change this function
         """calculate the answer of tree
 
@@ -66,25 +79,30 @@ class Expr:
             head (Node): your head
 
         Returns:
-            int: answer of function
+            int or None: answer of function (division by zero return None)
         """
-        if type(head) == int:
-            return head
-        elif type(head) != Node:
-            return x
-        elif head.data in allOp:
-            if head.data in oneChildOp:
-                value = self.calculator(x, head.getChild(1))#TODO if you wanna add more oneChild operator you should change this condition
-                if head.data == "sin":
-                    return math.sin(value)
-                if head.data == "cos":
-                    return math.cos(value)
-            else:
-                value1 = self.calculator(x, head.getChild(1))
-                value2 = self.calculator(x, head.getChild(2))
-                if value2 == 0:
-                    head.getChild(2).data = random.randint(randlimit[0],randlimit[1]) 
-                return eval(f'{value1} {head.data} {value2}')#TODO divide by zero
+        try:    
+            if type(head) == int:
+                return head
+            elif head == None:
+                return None
+            elif head == 'x':
+                return x
+            elif head.data in allOp:
+                if head.data in oneChildOp:
+                    value = self.calculator(x, head.getChild(1))#TODO if you wanna add more oneChild operator you should change this condition
+
+                    if head.data == "sin":
+                        return math.sin(value)
+                    elif head.data == "cos":
+                        return math.cos(value)
+                else:
+                    value1 = self.calculator(x, head.getChild(1))
+                    value2 = self.calculator(x, head.getChild(2)) 
+                    return cal(value1,head.data,value2)
+        except (ZeroDivisionError, TypeError, AttributeError):
+            return None
+
     def printTree(self, node):
         if type(node) != Node:
             return node
@@ -153,4 +171,4 @@ def generateTree(count, tree):
         else:
             tree.numCount += 2
         insertNode(tree.node )
-    tree.insertNum(tree.node, [2])#TODO it always in right
+    tree.insertNum(tree.node, [1])#TODO it always in right
