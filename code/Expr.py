@@ -52,6 +52,10 @@ class Node:
             self._left = input
         else:
             self._right = input
+
+        
+
+
 def cal(var1, op, var2):
     if op == '-':
         return var1 - var2
